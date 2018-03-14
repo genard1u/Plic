@@ -6,7 +6,6 @@ public class Retourne extends Instruction {
 
 	private Expression exp;
 	
-	
 	public Retourne(Expression expr) {
 		super(expr.getNoLigne());
 		exp = expr;
@@ -24,8 +23,11 @@ public class Retourne extends Instruction {
 		retour.append("# Retourne\n");
 
 		retour.append(exp.toMIPS()+"\n");
+		retour.append("# Nettoyage de la pile\n");
+		retour.append("");
 		// ??? retour.append("v0->$s7+16");
-		
+		retour.append("#Retour ");
+		retour.append("j $ra \n");
 		return retour.toString();
 	}	
 	

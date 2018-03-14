@@ -87,6 +87,7 @@ public class Programme extends ArbreAbstrait {
 		main(mips);
 		base(mips);
 		instructions(mips);	
+
 		end(mips);
 		
 		return mips.toString();
