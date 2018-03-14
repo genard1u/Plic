@@ -123,9 +123,10 @@ PROG    ::=    SYM_PROG IDF:nom DEBUT LDECL LINST:li FIN
                :}    
         |
                SYM_PROG IDF:nom DEBUT LINST:li FIN
-               {: TDS.getInstance().entrerBloc();
+               {: TDS.getInstance().entreeBloc();
                   RESULT = new Programme(li, nom, lileft+1); 
-             	  TDS.getInstance().sortirBloc(); :}
+             	  TDS.getInstance().sortieBloc(); 
+               :}
                ;
 
 LINST   ::=    LINST:li INST:i
@@ -168,29 +169,28 @@ DECL_VAR    ::=    TYPE:t IDF:idf POINTVIRGULE
 
 DECL_FONCTION    ::=    FONCTION IDF:i PARAMETRES DEBUT RETOURNE FIN
                         {:                            
-                           EntreeFonction entree = new EntreeFonction(i);
+                           EntreeFonction entree = new EntreeFonction(i, 0);
                            SymboleFonction symbole = new SymboleFonction("entier");
+                           
                            TDS.getInstance().ajouter(entree, symbole, ileft+1);
                            TDS.getInstance().entreeBloc();
-
                            TDS.getInstance().sortieBloc();
                         :}
                  |
-                        FONCTION IDF:i PARAMETRES DEBUT LINST:li RETOURNE FIN
+                        FONCTION IDF:i PARAMETRES DEBUT LINST:li FIN
                         {:                        	   
-                           EntreeFonction entree = new EntreeFonction(i);
+                           EntreeFonction entree = new EntreeFonction(i, 0);
                            SymboleFonction symbole = new SymboleFonction("entier");
-                           TDS.getInstance().ajouter(entree, symbole, ileft+1);
-                           TDS.getInstance().entreeBloc(); 
                            
+                           TDS.getInstance().ajouter(entree, symbole, ileft+1);
+                           TDS.getInstance().entreeBloc();                         
                            TDS.getInstance().sortieBloc();
-
                         :}
                  /* |
                         FONCTION IDF:i PARAMETRES DEBUT LDECLV RETOURNE FIN
                         {: :}
                  |
-                        FONCTION IDF:i PARAMETRES DEBUT LDECLV LINST RETOURNE FIN
+                        FONCTION IDF:i PARAMETRES DEBUT LDECLV LINST FIN
                         {: :} */
                         ;
   
@@ -256,7 +256,7 @@ LIRE    ::=    SYM_LIRE IDF:i POINTVIRGULE
                ;
                 
 RETOURNE    ::=    SYM_RETOURNE EXPR:exp POINTVIRGULE
-                   {: :}
+                   {: RESULT = new Retourne(exp); :}
                    ;
                                         
 EXPR    ::=     EXPR:g  PLUS  EXPR:d
