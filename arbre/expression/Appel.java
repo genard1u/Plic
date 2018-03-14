@@ -2,18 +2,28 @@ package yal.arbre.expression;
 
 import java.util.ArrayList;
 
+import yal.analyse.tds.TDS;
+import yal.analyse.tds.entree.EntreeFonction;
+import yal.analyse.tds.symbole.Symbole;
+import yal.exceptions.AnalyseSemantiqueException;
+
 public class Appel extends Expression {
 
 	private String idf;
 	private String type;
+	private int nombreParametres;
 	
+	private String etiquette;
 	
+
 	public Appel(int n) {
 		super(n);
+		nombreParametres = 0;
 	}
-
+	
 	public Appel(ArrayList<Expression> par, int n) {
 		super(n);
+		nombreParametres = par.size();
 	}
 	
 	@Override
@@ -28,7 +38,12 @@ public class Appel extends Expression {
 
 	@Override
 	public void verifier() {
-
+		EntreeFonction e = new EntreeFonction(idf, nombreParametres);
+		Symbole s = TDS.getInstance().identifier(e);
+		
+		if (s == null) {
+			throw new AnalyseSemantiqueException(getNoLigne(), "aucune déclaration de `" + idf + "()`");
+		}
 	}
 
 	@Override

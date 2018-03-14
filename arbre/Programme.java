@@ -66,6 +66,10 @@ public class Programme extends ArbreAbstrait {
 		mips.append(instructions.toMIPS());	
 	}
 	
+	public void fonctions(StringBuilder mips) {
+		
+	}
+	
 	public void main(StringBuilder mips) {
 		mips.append(".text");
 		mips.append("\n");
@@ -87,6 +91,7 @@ public class Programme extends ArbreAbstrait {
 		main(mips);
 		base(mips);
 		instructions(mips);	
+		fonctions(mips);
 		end(mips);
 		
 		return mips.toString();
