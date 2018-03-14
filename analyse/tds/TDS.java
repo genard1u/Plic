@@ -90,6 +90,11 @@ public class TDS {
 		numeroImbrication--;
 	}
 	
+	public int numeroParent(){
+		Arbre parent = blocCourant.getParent();
+		return parent.numeroRegion();
+	}
+	
 	public int numeroRegion() {
 		return blocCourant.numeroRegion();
 	}
