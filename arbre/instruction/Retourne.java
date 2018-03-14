@@ -20,6 +20,7 @@ public class Retourne extends Instruction {
 	public String toMIPS() {
 		StringBuilder retour = new StringBuilder();
 		int hash = hashCode();
+		retour.append("# Retourne\n");
 		retour.append(exp.toMIPS()+"\n");
 		// ??? retour.append("v0->$s7+16");
 		return retour.toString();
