@@ -42,21 +42,25 @@ public class Fonction extends ArbreAbstrait {
 		fonction.append("add $sp, $sp, -4\n");
 		fonction.append("\n");
 		
-
-
 		 // 		$s7 <- $sp
+		fonction.append("add $s7, $sp, 0 \n");
 		
 		//0 ACTUELLEMENT DONC PAS DE PROBLEME
-		 // 		$sp <- $sp-place variable
-		
+		 // 		$sp <- $sp-place variable nbVariables()
+		fonction.append("add $sp, $sp, -"+TDS.getInstance().nbVariables()+"\n");
 		
 
 		 fonction.append(li.toMIPS()+"\n");
-		 fonction.append("# Dépilement de la base\n");
+		
 		 //sp <- sp+nbVariable+n°region+chainagedynamique
 		 fonction.append("add $sp, $sp, "+TDS.getInstance().nbVariables()+"\n");
 		 fonction.append("add $sp, $sp, "+TDS.getInstance().numeroRegion()+"\n");
 		 fonction.append("add $sp, $sp, "+TDS.getInstance().numeroParent()+"\n");
+		 
+		 fonction.append("# Dépilement de la base\n");
+		 fonction.append("add $sp, $sp, 4\n");
+		 //fonction.append("lw $t8, 0($sp)\n");
+		 fonction.append("\n");
 		 
 		 fonction.append("lw $ra, 0($sp)\n");
 		 fonction.append("jr $ra+\n");
