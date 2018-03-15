@@ -5,16 +5,25 @@ import yal.analyse.tds.TDS;
 public class Programme extends ArbreAbstrait {
 
 	private String nom;
+	private BlocDInstructions fonctions;
 	private BlocDInstructions instructions;
 	private int tailleZoneDesVariables;
 	
 	
-	public Programme(BlocDInstructions li, String nom, int no) {
-		super(no);
+	public Programme(BlocDInstructions li, String p, int noLigne) {
+		super(noLigne);
+		fonctions = new BlocDInstructions(noLigne + 1);
 		instructions = li;
-		this.nom = nom;
+		nom = p;
 	}
 
+	public Programme(BlocDInstructions ld, BlocDInstructions li, String p, int noLigne) {
+		super(noLigne);
+		fonctions = ld;
+		instructions = li;
+		nom = p;
+	}
+	
 	public void base(StringBuilder mips) {
 		mips.append("# Initialisation de la base des variables\n");
         mips.append("move $s7, $sp\n");
@@ -52,7 +61,7 @@ public class Programme extends ArbreAbstrait {
         mips.append("\n");
     }
 	
-	public void end(StringBuilder mips) {
+	public void fin(StringBuilder mips) {
     	mips.append("end :\n");
         mips.append("# fin du programme\n");
         mips.append("move $v1, $v0\t");
@@ -67,7 +76,7 @@ public class Programme extends ArbreAbstrait {
 	}
 	
 	public void fonctions(StringBuilder mips) {
-		
+		mips.append(fonctions.toMIPS());
 	}
 	
 	public void main(StringBuilder mips) {
@@ -79,8 +88,11 @@ public class Programme extends ArbreAbstrait {
 	
 	@Override
 	public void verifier() {
+		TDS.getInstance().entreeBloc();
 		tailleZoneDesVariables = TDS.getInstance().tailleZoneDesVariables();
+		fonctions.verifier();
 		instructions.verifier();
+		TDS.getInstance().sortieBloc();
 	}
 
 	@Override
@@ -92,7 +104,7 @@ public class Programme extends ArbreAbstrait {
 		base(mips);
 		instructions(mips);	
 		fonctions(mips);
-		end(mips);
+		fin(mips);
 		
 		return mips.toString();
 	}

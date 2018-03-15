@@ -38,11 +38,15 @@ public class Fonction extends Instruction {
 		}
 		
 		typeRetour = s.getType();
+		
+		TDS.getInstance().entreeBloc();		
 		instructions.verifier();
 		
 		if (!estRetourne()) {
 			throw new AnalyseSemantiqueException(getNoLigne(), "retourne peut ne pas être atteint dans `" + idf + "()`");
 		}
+		
+		TDS.getInstance().sortieBloc();
 	}
 	
 	@Override
