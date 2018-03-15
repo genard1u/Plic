@@ -13,7 +13,7 @@ public class Appel extends Expression {
 	private String type;
 	private int nombreParametres;
 	
-	private String etiquette;
+	// private String etiquette;
 	
 
 	public Appel(int n) {
@@ -50,7 +50,7 @@ public class Appel extends Expression {
 	public String toMIPS() {	
 		StringBuilder appel = new StringBuilder(50);
 		
-		appel.append("sub $sp, $sp, 4\n");
+		appel.append("add $sp, $sp, -4\n");
 		
 		appel.append("#Jump sur la fonction "+idf+"\n");
 		appel.append("jal "+idf+"\n");

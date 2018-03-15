@@ -6,11 +6,17 @@ public class Retourne extends Instruction {
 
 	private Expression exp;
 	
+	
 	public Retourne(Expression expr) {
 		super(expr.getNoLigne());
 		exp = expr;
 	}
 
+	@Override
+	public boolean estRetourne() {
+		return true;
+	}
+	
 	@Override
 	public void verifier() {
 		exp.verifier();
@@ -18,16 +24,18 @@ public class Retourne extends Instruction {
 
 	@Override
 	public String toMIPS() {
-		StringBuilder retour = new StringBuilder();
-		int hash = hashCode();
+		StringBuilder retour = new StringBuilder(50);
+		// int hash = hashCode();
+		
 		retour.append("# Retourne\n");
 
-		retour.append(exp.toMIPS()+"\n");
+		retour.append(exp.toMIPS() + "\n");
 		retour.append("# Nettoyage de la pile\n");
 		retour.append("");
 		// ??? retour.append("v0->$s7+16");
-		retour.append("#Retour ");
-		retour.append("j $ra \n");
+		retour.append("# Retour ");
+		retour.append("j $ra\n");
+		
 		return retour.toString();
 	}	
 	

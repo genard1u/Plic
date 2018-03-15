@@ -13,7 +13,9 @@ public class Condition extends Instruction {
     
     public Condition(Expression expr) {
     	super(expr.getNoLigne());
+    	
     	exp = expr;
+    	
     	alors = new BlocDInstructions(noLigne + 1);
     	sinon = new BlocDInstructions(noLigne + 1);
     }
@@ -26,6 +28,7 @@ public class Condition extends Instruction {
      */
 	public Condition(Expression expr, BlocDInstructions li, boolean vide) {
 		super(expr.getNoLigne());
+		
 		exp = expr;
 		
 		if (!vide) {
@@ -40,10 +43,16 @@ public class Condition extends Instruction {
 
 	public Condition(Expression expr, BlocDInstructions alors, BlocDInstructions sinon) {
 		super(expr.getNoLigne());
+		
 		exp = expr;
 		
 		this.alors = alors;
 		this.sinon = sinon;
+	}
+	
+	@Override
+	public boolean verifierRetourne() {
+		return alors.verifierRetourne() && sinon.verifierRetourne();
 	}
 	
 	@Override

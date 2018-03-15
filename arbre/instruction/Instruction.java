@@ -9,6 +9,14 @@ public abstract class Instruction extends ArbreAbstrait {
 
 	public Instruction(int no) {
 		super(no);
+	}	
+	
+	public boolean estRetourne() {
+		return false;
+	}
+	
+	public boolean verifierRetourne() {
+		return false;
 	}
 	
 	public abstract void verifier();

@@ -17,6 +17,13 @@ public class Boucle extends Instruction {
 	}
 
 	@Override
+	public boolean verifierRetourne() {
+        assert instructions.nombreInstructions() > 0;
+		
+		return instructions.verifierRetourne();
+	}
+	
+	@Override
 	public void verifier() {
 		exp.verifier();
 		

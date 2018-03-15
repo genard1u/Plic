@@ -28,6 +28,41 @@ public class BlocDInstructions extends ArbreAbstrait {
         bloc.add(a);
     }
        
+    public boolean estVide() {
+    	return bloc.isEmpty();
+    }
+    
+    public int nombreInstructions() {
+    	return bloc.size();
+    }
+    
+    public Instruction derniereInstruction() {
+    	Instruction derniere = null;
+    	
+    	if (!estVide()) {
+    		derniere = bloc.get(bloc.size() - 1);
+    	}
+    	
+    	return derniere;
+    }
+    
+    public boolean verifierRetourne() {
+		boolean verification = false;
+		
+		if (nombreInstructions() > 0) {
+		    Instruction derniere = derniereInstruction();
+		
+		    if (derniere.estRetourne()) {
+			    verification = true;
+		    }
+		    else {
+			    verification = derniere.verifierRetourne();
+		    }
+		}
+		
+		return verification;
+    }
+    
     @Override
     public void verifier() {
     	for (Instruction instr : bloc) {
