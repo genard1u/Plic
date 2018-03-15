@@ -29,6 +29,8 @@ public class Condition extends Instruction {
 	public Condition(Expression expr, BlocDInstructions li, boolean vide) {
 		super(expr.getNoLigne());
 		
+		assert li != null;
+		
 		exp = expr;
 		
 		if (!vide) {
@@ -51,8 +53,8 @@ public class Condition extends Instruction {
 	}
 	
 	@Override
-	public boolean verifierRetourne() {
-		return alors.verifierRetourne() && sinon.verifierRetourne();
+	public boolean estRetourne() {
+		return alors.estRetourne() && sinon.estRetourne();
 	}
 	
 	@Override

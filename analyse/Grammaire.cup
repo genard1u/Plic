@@ -79,7 +79,7 @@ parser code {:
    
 /* Terminals (tokens returned by the scanner).  */
 
-terminal Symbol    SYM_PROG, DEBUT, FIN, FONCTION, SYM_RETOURNE;
+terminal Symbol    SYM_PROG, DEBUT, FIN, FONCTION, SYM_RET;
 terminal Symbol    POINTVIRGULE, VIRGULE;
 terminal Symbol    PLUS, MOINS, MULT, DIV, PAROUV, PARFER;
 terminal Symbol    SUP, INF, EGALEGAL, DIFF, ET, OU, NON;
@@ -247,7 +247,7 @@ LIRE    ::=    SYM_LIRE IDF:i POINTVIRGULE
                {: RESULT = new Lire(i, ileft+1); :}
                ;
                 
-RETOURNE    ::=    SYM_RETOURNE EXPR:exp POINTVIRGULE
+RETOURNE    ::=    SYM_RET EXPR:exp POINTVIRGULE
                    {: RESULT = new Retourne(exp); :}
                    ;
                                         

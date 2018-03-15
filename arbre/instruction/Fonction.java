@@ -22,10 +22,10 @@ public class Fonction extends Instruction {
 	}
 
 	@Override
-	public boolean verifierRetourne() {
+	public boolean estRetourne() {
 		assert instructions.nombreInstructions() > 0;
 		
-		return instructions.verifierRetourne();
+		return instructions.estRetourne();
 	}
 	
 	@Override
@@ -39,7 +39,10 @@ public class Fonction extends Instruction {
 		
 		typeRetour = s.getType();
 		instructions.verifier();
-		verifierRetourne();
+		
+		if (!estRetourne()) {
+			throw new AnalyseSemantiqueException(getNoLigne(), "retourne peut ne pas être atteint dans `" + idf + "()`");
+		}
 	}
 	
 	@Override

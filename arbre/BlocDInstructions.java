@@ -1,6 +1,7 @@
 package yal.arbre;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import yal.arbre.instruction.Instruction;
 
@@ -36,28 +37,15 @@ public class BlocDInstructions extends ArbreAbstrait {
     	return bloc.size();
     }
     
-    public Instruction derniereInstruction() {
-    	Instruction derniere = null;
-    	
-    	if (!estVide()) {
-    		derniere = bloc.get(bloc.size() - 1);
-    	}
-    	
-    	return derniere;
-    }
-    
-    public boolean verifierRetourne() {
+    public boolean estRetourne() {
 		boolean verification = false;
 		
-		if (nombreInstructions() > 0) {
-		    Instruction derniere = derniereInstruction();
+		Iterator<Instruction> parcoursBloc = bloc.iterator();
 		
-		    if (derniere.estRetourne()) {
-			    verification = true;
-		    }
-		    else {
-			    verification = derniere.verifierRetourne();
-		    }
+		while (!verification && parcoursBloc.hasNext()) {
+			Instruction inst = parcoursBloc.next();
+			
+			verification = inst.estRetourne();
 		}
 		
 		return verification;
@@ -79,7 +67,7 @@ public class BlocDInstructions extends ArbreAbstrait {
 			mips.append("\n");
 		}
 		
-        return mips.toString() ;
+        return mips.toString();
     }
 
     @Override
@@ -91,7 +79,7 @@ public class BlocDInstructions extends ArbreAbstrait {
 			yal.append("\n");
 		}
 		
-        return yal.toString() ;
+        return yal.toString();
     }
     
 }
