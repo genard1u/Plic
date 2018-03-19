@@ -1,28 +1,54 @@
 package yal.arbre.instruction;
 
 import yal.analyse.tds.TDS;
-import yal.arbre.ArbreAbstrait;
+import yal.analyse.tds.entree.EntreeFonction;
+import yal.analyse.tds.symbole.Symbole;
 import yal.arbre.BlocDInstructions;
+import yal.exceptions.AnalyseSemantiqueException;
 
-public class Fonction extends ArbreAbstrait {
+public class Fonction extends Instruction {
 	
 	private String idf;
 	private String typeRetour;
-	private String[] parametres;
+	// private String[] parametres;
 	
-	private BlocDInstructions li;
+	private BlocDInstructions instructions;
+
 	
-	
-	public Fonction(int noLigne, BlocDInstructions li) {
+	public Fonction(BlocDInstructions li, String idf, int noLigne) {
 		super(noLigne);
-		this.li = li;
+		instructions = li;
+		this.idf = idf;
 	}
 
 	@Override
-	public void verifier() {
-		li.verifier();
+	public boolean estRetourne() {
+		assert instructions.nombreInstructions() > 0;
+		
+		return instructions.estRetourne();
 	}
-
+	
+	@Override
+	public void verifier() {
+		EntreeFonction e = new EntreeFonction(idf, 0);
+		Symbole s = TDS.getInstance().identifier(e);
+		
+		if (s == null) {
+			throw new AnalyseSemantiqueException(getNoLigne(), "aucune déclaration de `" + idf + "()`");
+		}
+		
+		typeRetour = s.getType();
+		
+		TDS.getInstance().entreeBloc();		
+		instructions.verifier();
+		
+		if (!estRetourne()) {
+			throw new AnalyseSemantiqueException(getNoLigne(), "retourne peut ne pas être atteint dans `" + idf + "()`");
+		}
+		
+		TDS.getInstance().sortieBloc();
+	}
+	
 	@Override
 	public String toMIPS() {
 		StringBuilder fonction = new StringBuilder();
@@ -41,20 +67,20 @@ public class Fonction extends ArbreAbstrait {
 		//fonction.append("\n");
 		
 		fonction.append("# Empilement du numero de region\n");
-		fonction.append("sw "+TDS.getInstance().numeroRegion()+", 0($sp)\n");
+		fonction.append("sw " + TDS.getInstance().numeroRegion() + ", 0($sp)\n");
 		fonction.append("add $sp, $sp, -4\n");
 		fonction.append("\n");
-		
-		 // 		$s7 <- $sp
-		fonction.append("add $s7, $sp, 0 \n");
 		
 		fonction.append("# Allocation de la place des variables");
 		fonction.append("add $sp, $sp, -"+TDS.getInstance().nbVariables()+"\n");
 		
+// 		$s7 <- $sp
+		fonction.append("add $s7, $sp, 0 \n");
+		
 		fonction.append("# Instruction de la fonction");
-		 fonction.append(li.toMIPS()+"\n");
+		fonction.append(instructions.toMIPS()+"\n");
 		
-		
+
 		
 		return fonction.toString();
 	}
@@ -68,7 +94,7 @@ public class Fonction extends ArbreAbstrait {
 		fonction.append(idf);
 		fonction.append("(");
 		
-		int dernier = parametres.length - 1;
+		/* int dernier = parametres.length - 1;
 		
 		for (int i = 0; i < dernier; i ++) {
 		    fonction.append(parametres[i]);
@@ -77,11 +103,10 @@ public class Fonction extends ArbreAbstrait {
 		
 		if (parametres.length > 0) {
 			fonction.append(parametres[dernier]);
-		}
+		} */
 		
-		fonction.append("");
 		fonction.append(") {");
-		fonction.append(li.toString());
+		fonction.append(instructions.toString());
 		fonction.append("}");
 		fonction.append("\n");
 		

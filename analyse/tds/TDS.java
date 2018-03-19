@@ -44,11 +44,14 @@ public class TDS {
     
 	public void ajouter(Entree e, Symbole s, int noLigne) {
 		assert e != null;
+		assert blocCourant != null;
 		
 		blocCourant.ajouter(e, s, noLigne);
 	}
 	
 	public Symbole identifier(Entree e) {
+		assert blocCourant != null;
+		
 		return blocCourant.identifier(e);
 	}
 
@@ -84,18 +87,30 @@ public class TDS {
 	}
 	
 	public void sortieBloc() {
+		assert blocCourant != null;
+		
 		Arbre parent = blocCourant.getParent();
 		
 		blocCourant = parent;
 		numeroImbrication--;
 	}
 	
-	public int numeroParent(){
+	public int numeroParent() {
+		assert blocCourant != null;
+		
 		Arbre parent = blocCourant.getParent();
-		return parent.numeroRegion();
+		int numeroRegion = -1;
+		
+		if (parent != null) {
+			numeroRegion = parent.numeroRegion();
+		}
+		
+		return numeroRegion;
 	}
 	
 	public int numeroRegion() {
+		assert blocCourant != null;
+		
 		return blocCourant.numeroRegion();
 	}
 	
@@ -104,15 +119,21 @@ public class TDS {
 	}
 	
 	public int nbVariables() {
+		assert blocCourant != null;
+		
 		return blocCourant.nbVariables();
 	}
 	
 	public int tailleZoneDesVariables() {
+		assert blocCourant != null;
+		
 		return blocCourant.tailleZoneDesVariables();
     }
 	
 	@Override
 	public String toString() {
+		assert blocCourant != null;
+		
 		return blocCourant.toString();
 	}
 	

@@ -17,13 +17,17 @@ public class Arbre {
 	
     
 	public Arbre(int numeroRegion) {
+		this.numeroRegion = numeroRegion;
 		parent = null;
+		
 		fils = new HashMap<Integer, Arbre>();
 		table = new HashMap<Entree, Symbole>();
 	}
 	
 	public Arbre(int numeroRegion, Arbre parent) {
+		this.numeroRegion = numeroRegion;
 		this.parent = parent;
+		
 		fils = new HashMap<Integer, Arbre>();
 		table = new HashMap<Entree, Symbole>();
 	}

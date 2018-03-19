@@ -7,11 +7,17 @@ public class Retourne extends Instruction {
 
 	private Expression exp;
 	
+	
 	public Retourne(Expression expr) {
 		super(expr.getNoLigne());
 		exp = expr;
 	}
 
+	@Override
+	public boolean estRetourne() {
+		return true;
+	}
+	
 	@Override
 	public void verifier() {
 		exp.verifier();
@@ -19,13 +25,15 @@ public class Retourne extends Instruction {
 
 	@Override
 	public String toMIPS() {
-		StringBuilder retour = new StringBuilder();
-		int hash = hashCode();
+		StringBuilder retour = new StringBuilder(50);
+		// int hash = hashCode();
+		
 		retour.append("# Retourne\n");
 
-		retour.append(exp.toMIPS()+"\n");
+		retour.append(exp.toMIPS() + "\n");
 		retour.append("# Nettoyage de la pile\n");
 		retour.append("");
+
 		 //sp <- sp+nbVariable+n°region+chainagedynamique
 		retour.append("add $sp, $sp, "+TDS.getInstance().nbVariables()+"\n");
 		retour.append("add $sp, $sp, "+TDS.getInstance().numeroRegion()+"\n");
@@ -39,6 +47,7 @@ public class Retourne extends Instruction {
 		retour.append("lw $ra, 0($sp)\n");
 		retour.append("jr $ra+\n");
 		 
+
 		return retour.toString();
 	}	
 	

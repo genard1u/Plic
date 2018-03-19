@@ -5,14 +5,14 @@ import yal.analyse.tds.entree.EntreeVariable;
 import yal.analyse.tds.symbole.Symbole;
 import yal.exceptions.AnalyseSemantiqueException;
 
-public class Variable extends Expression {
+public class Identifiant extends Expression {
 
 	private String idf;
 	private String type;
 	private int deplacement;
 	
 	
-	public Variable(String idf, int n) {
+	public Identifiant(String idf, int n) {
 		super(n);
 		this.idf = idf;
 	}

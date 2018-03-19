@@ -13,5 +13,10 @@ public class EntreeFonction extends Entree {
 	public int nombreParametres() {
 		return nombreParametres;
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "()";
+	}
 	
 }
