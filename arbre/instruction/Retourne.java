@@ -25,8 +25,7 @@ public class Retourne extends Instruction {
 
 	@Override
 	public String toMIPS() {
-		StringBuilder retour = new StringBuilder(50);
-		// int hash = hashCode();
+		StringBuilder retour = new StringBuilder(100);
 		
 		retour.append("# Retourne\n");
 

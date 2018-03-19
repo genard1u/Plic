@@ -2,7 +2,7 @@ package yal.arbre.instruction;
 
 import yal.analyse.tds.TDS;
 import yal.analyse.tds.entree.EntreeFonction;
-import yal.analyse.tds.symbole.Symbole;
+import yal.analyse.tds.symbole.SymboleFonction;
 import yal.arbre.BlocDInstructions;
 import yal.exceptions.AnalyseSemantiqueException;
 
@@ -18,8 +18,8 @@ public class Fonction extends Instruction {
 	
 	public Fonction(BlocDInstructions li, String idf, int noLigne) {
 		super(noLigne);
-		instructions = li;
 		this.idf = idf;
+		instructions = li;
 	}
 
 	@Override
@@ -32,14 +32,17 @@ public class Fonction extends Instruction {
 	@Override
 	public void verifier() {
 		EntreeFonction e = new EntreeFonction(idf, 0);
-		Symbole s = TDS.getInstance().identifier(e);
+		SymboleFonction s = (SymboleFonction) TDS.getInstance().identifier(e);
 		
 		if (s == null) {
 			throw new AnalyseSemantiqueException(getNoLigne(), "aucune déclaration de `" + idf + "()`");
 		}
 		
-		typeRetour = s.getType();		
+		typeRetour = s.getType();
+		etiquette = s.etiquette();
+		
 		TDS.getInstance().entreeBloc();		
+		
 		instructions.verifier();
 		
 		if (!estRetourne()) {
@@ -54,7 +57,7 @@ public class Fonction extends Instruction {
 		StringBuilder fonction = new StringBuilder();
 		
 		fonction.append("# Fonction\n");
-		fonction.append(idf+":\n");//étiquette de la fonction
+		fonction.append(etiquette + ":\n");
 		
 		fonction.append("# Empilement de l'adresse retour\n");
 		fonction.append("sw $s7, 0($sp)\n");

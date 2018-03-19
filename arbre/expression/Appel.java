@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import yal.analyse.tds.TDS;
 import yal.analyse.tds.entree.EntreeFonction;
-import yal.analyse.tds.symbole.Symbole;
+import yal.analyse.tds.symbole.SymboleFonction;
 import yal.exceptions.AnalyseSemantiqueException;
 
 public class Appel extends Expression {
@@ -14,16 +14,16 @@ public class Appel extends Expression {
 	private String etiquette; 
 	private int nombreParametres;
 	
-	// private String etiquette;
-	
 
-	public Appel(int n) {
+	public Appel(String idf, int n) {
 		super(n);
+		this.idf = idf;
 		nombreParametres = 0;
 	}
 	
-	public Appel(ArrayList<Expression> par, int n) {
+	public Appel(String idf, ArrayList<Expression> par, int n) {
 		super(n);
+		this.idf = idf;
 		nombreParametres = par.size();
 	}
 	
@@ -40,11 +40,14 @@ public class Appel extends Expression {
 	@Override
 	public void verifier() {
 		EntreeFonction e = new EntreeFonction(idf, nombreParametres);
-		Symbole s = TDS.getInstance().identifier(e);
-		
+		SymboleFonction s = (SymboleFonction) TDS.getInstance().identifier(e);
+
 		if (s == null) {
 			throw new AnalyseSemantiqueException(getNoLigne(), "aucune déclaration de `" + idf + "()`");
 		}
+		
+		etiquette = s.etiquette();
+		type = s.getType();
 	}
 
 	@Override
@@ -54,8 +57,8 @@ public class Appel extends Expression {
 		appel.append("# Allocation de la place de la valeur retour\n");
 		appel.append("add $sp, $sp, -4\n");
 		
-		appel.append("#Jump sur la fonction "+etiquette+"\n");
-		appel.append("jal "+etiquette+"\n");
+		appel.append("# Jump sur la fonction " + idf + "\n");
+		appel.append("jal " + etiquette + "\n");
 		
 		appel.append("#Dépiler dans v0\n");
 		appel.append("lw $v0, 0($sp)\n");
