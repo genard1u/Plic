@@ -28,18 +28,21 @@ public class Retourne extends Instruction {
 		StringBuilder retour = new StringBuilder(100);
 		
 		retour.append("# Retourne\n");
-
 		retour.append(exp.toMIPS() + "\n");
 
 		retour.append("# Nettoyage de la pile\n");
+		
 		retour.append("# Nettoyage de l'espace alloué aux variables\n");
-		retour.append("add $sp, $sp, "+TDS.getInstance().nbVariables()+"\n");
+		retour.append("add $sp, $sp, " + TDS.getInstance().nbVariables() + "\n");
+		
 		retour.append("# Nettoyage de l'espace du numéro de région\n");
-		retour.append("add $sp, $sp, "+TDS.getInstance().numeroRegion()+"\n");
+		retour.append("add $sp, $sp, " + TDS.getInstance().numeroRegion() + "\n");
+		
 		retour.append("# Replacement de $s7 vers la base précédente\n");
 		retour.append("add $s7, $sp, 0\n");
-		retour.append("# Nettoyage de l'espace du numéro du Chainage dynamique\n");
-		retour.append("add $sp, $sp, "+TDS.getInstance().numeroParent()+"\n");
+		
+		retour.append("# Nettoyage de l'espace pour le numéro du chaînage dynamique\n");
+		retour.append("add $sp, $sp, " + TDS.getInstance().numeroParent() + "\n");
 				
 		retour.append("# Stockage de l'adresse de retour\n");
 		retour.append("lw $ra, 0($sp)\n");
@@ -49,7 +52,7 @@ public class Retourne extends Instruction {
 		retour.append("lw $sp, 0($v0)\n ");		
 		
 		retour.append("# Jump\n");
-		retour.append("jr $ra+\n");		 
+		retour.append("jr $ra\n");		 
 
 		return retour.toString();
 	}	

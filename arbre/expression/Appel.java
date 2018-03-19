@@ -53,16 +53,17 @@ public class Appel extends Expression {
 	@Override
 	public String toMIPS() {	
 		StringBuilder appel = new StringBuilder(50);
+		
 		appel.append("# Appel d'un fonction \n");
-		appel.append("# Allocation de la place de la valeur retour\n");
+		appel.append("# Allocation de la place pour la valeur retour\n");
 		appel.append("add $sp, $sp, -4\n");
 		
 		appel.append("# Jump sur la fonction " + idf + "\n");
 		appel.append("jal " + etiquette + "\n");
 		
-		appel.append("#Dépiler dans v0\n");
+		appel.append("#Dépiler dans v0\n"); // sens ?
+		appel.append("add $sp, $sp, 4\n"); 
 		appel.append("lw $v0, 0($sp)\n");
-		appel.append("add $sp, $sp, 4\n");
 		
 		return appel.toString();
 	}

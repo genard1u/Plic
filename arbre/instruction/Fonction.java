@@ -54,7 +54,7 @@ public class Fonction extends Instruction {
 	
 	@Override
 	public String toMIPS() {
-		StringBuilder fonction = new StringBuilder();
+		StringBuilder fonction = new StringBuilder(100);
 		
 		fonction.append("# Fonction\n");
 		fonction.append(etiquette + ":\n");
@@ -65,7 +65,7 @@ public class Fonction extends Instruction {
 		fonction.append("\n");
 
 		fonction.append("# Empilement du chainage dynamique\n");
-		fonction.append("sw "+TDS.getInstance().numeroParent()+", 0($sp)\n");
+		fonction.append("sw " + TDS.getInstance().numeroParent() + ", 0($sp)\n");
 		fonction.append("add $sp, $sp, -4\n");
 		fonction.append("\n");
 		
@@ -75,13 +75,13 @@ public class Fonction extends Instruction {
 		fonction.append("\n");
 				
 		fonction.append("# Déplacement de la base\n");
-		fonction.append("add $s7, $sp, 0 \n");
+		fonction.append("add $s7, $sp, 0\n");
 		
 		fonction.append("# Allocation de la place des variables\n");
-		fonction.append("add $sp, $sp, -"+TDS.getInstance().nbVariables()+"\n");
+		fonction.append("add $sp, $sp, -" + TDS.getInstance().nbVariables() + "\n");
 		
 		fonction.append("# Instruction de la fonction\n");
-		fonction.append(instructions.toMIPS()+"\n");
+		fonction.append(instructions.toMIPS() + "\n");
 		
 		return fonction.toString();
 	}
@@ -107,6 +107,7 @@ public class Fonction extends Instruction {
 		} */
 		
 		fonction.append(") {");
+		fonction.append("\n");
 		fonction.append(instructions.toString());
 		fonction.append("}");
 		fonction.append("\n");

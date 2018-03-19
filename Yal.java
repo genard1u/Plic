@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import yal.analyse.AnalyseurLexical;
-import yal.analyse.AnalyseurSyntaxique;
+import yal.analyse.*;
 import yal.analyse.tds.TDS;
 import yal.arbre.ArbreAbstrait;
 import yal.exceptions.AnalyseException;
