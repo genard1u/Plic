@@ -10,6 +10,7 @@ public class Fonction extends Instruction {
 	
 	private String idf;
 	private String typeRetour;
+	private String etiquette;
 	// private String[] parametres;
 	
 	private BlocDInstructions instructions;
@@ -37,8 +38,7 @@ public class Fonction extends Instruction {
 			throw new AnalyseSemantiqueException(getNoLigne(), "aucune déclaration de `" + idf + "()`");
 		}
 		
-		typeRetour = s.getType();
-		
+		typeRetour = s.getType();		
 		TDS.getInstance().entreeBloc();		
 		instructions.verifier();
 		

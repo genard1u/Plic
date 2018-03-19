@@ -15,7 +15,6 @@ public class TDS {
 	private Arbre blocCourant;
 	
 	private int numeroRegion;
-	private int numeroImbrication;
 	
 	
 	private TDS() {
@@ -31,7 +30,6 @@ public class TDS {
 		blocPrincipal = null;
 		blocCourant = null;
 		numeroRegion = -1;
-		numeroImbrication = -1;
 	}
 	
 	public void prepareAnalyseSemantique() {
@@ -39,7 +37,6 @@ public class TDS {
 		
 		analyse = Analyse.Semantique;
 		numeroRegion = -1;
-		numeroImbrication = -1;
 	}
     
 	public void ajouter(Entree e, Symbole s, int noLigne) {
@@ -57,7 +54,6 @@ public class TDS {
 
 	public void entreeBloc() {
 		numeroRegion ++;
-		numeroImbrication ++;
 		
 		switch (analyse) {
 		    case Syntaxique:
@@ -92,7 +88,6 @@ public class TDS {
 		Arbre parent = blocCourant.getParent();
 		
 		blocCourant = parent;
-		numeroImbrication--;
 	}
 	
 	public int numeroParent() {
@@ -112,10 +107,6 @@ public class TDS {
 		assert blocCourant != null;
 		
 		return blocCourant.numeroRegion();
-	}
-	
-	public int numeroImbrication() {
-		return numeroImbrication;
 	}
 	
 	public int nbVariables() {
