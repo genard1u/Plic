@@ -1,5 +1,6 @@
 package yal.arbre.instruction;
 
+import yal.analyse.tds.TDS;
 import yal.arbre.expression.Expression;
 
 public class Retourne extends Instruction {
@@ -25,9 +26,19 @@ public class Retourne extends Instruction {
 		retour.append(exp.toMIPS()+"\n");
 		retour.append("# Nettoyage de la pile\n");
 		retour.append("");
-		// ??? retour.append("v0->$s7+16");
-		retour.append("#Retour ");
-		retour.append("j $ra \n");
+		 //sp <- sp+nbVariable+n°region+chainagedynamique
+		retour.append("add $sp, $sp, "+TDS.getInstance().nbVariables()+"\n");
+		retour.append("add $sp, $sp, "+TDS.getInstance().numeroRegion()+"\n");
+		retour.append("add $sp, $sp, "+TDS.getInstance().numeroParent()+"\n");
+		 
+		retour.append("# Dépilement de la base\n");
+		retour.append("add $sp, $sp, 4\n");
+		 //retour.append("lw $t8, 0($sp)\n");
+		retour.append("\n");
+		 
+		retour.append("lw $ra, 0($sp)\n");
+		retour.append("jr $ra+\n");
+		 
 		return retour.toString();
 	}	
 	
