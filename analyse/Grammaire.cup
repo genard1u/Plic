@@ -313,10 +313,10 @@ EXPR    ::=     EXPR:g  PLUS  EXPR:d
                 {: RESULT = new Identifiant(i, ileft+1); :}
         |
                 IDF:i PAROUV PARFER
-                {: RESULT = new Appel(ileft+1); :}
+                {: RESULT = new Appel(i, ileft+1); :}
         /* |       
                 IDF:i PAROUV PAR_EFF:par PARFER
-                {: RESULT = new Appel(par, ileft+1); :} */
+                {: RESULT = new Appel(i, par, ileft+1); :} */
                 ;
 
 CSTE    ::=     CONSTANTEINT:e 
