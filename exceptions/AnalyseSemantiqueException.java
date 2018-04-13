@@ -1,7 +1,7 @@
 package yal.exceptions;
 
 /**
- * @author Clément Bellanger, Pierre Génard, Valentin Thouvenin
+ * @author Pierre Génard
  */
 @SuppressWarnings("serial")
 public class AnalyseSemantiqueException extends AnalyseException {

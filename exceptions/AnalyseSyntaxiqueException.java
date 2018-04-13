@@ -1,7 +1,7 @@
 package yal.exceptions;
 
 /**
- * @author brigitte wrobel-dautcourt
+ * @author Pierre Génard
  */
 @SuppressWarnings("serial")
 public class AnalyseSyntaxiqueException extends AnalyseException {
