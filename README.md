@@ -1,5 +1,5 @@
 # Yal
-Le langage ​**YAL** est un langage de programmation typé rudimentaire incluant les structures de contrôle élémentaires, les tableaux et les fonctions.
+Le langage ​**YAL** est un langage de programmation typé rudimentaire incluant les structures de contrôle élémentaires, les tableaux et les fonctions.   
 Le compilateur **YAL** est développé en Java, les générateurs d'analyseurs ​JFlex et ​JavaCup​ sont utilisés. Il génère du code ​MIPS​.
 
 ## Auteurs
