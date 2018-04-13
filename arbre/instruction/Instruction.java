@@ -15,6 +15,10 @@ public abstract class Instruction extends ArbreAbstrait {
 		return false;
 	}
 	
+	public boolean estDeclarationTableau() {
+		return false;
+	}
+	
 	public abstract void verifier();
     public abstract String toMIPS();
 

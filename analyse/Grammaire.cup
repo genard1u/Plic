@@ -80,20 +80,22 @@ parser code {:
 /* Terminals (tokens returned by the scanner).  */
 
 terminal Symbol    SYM_PROG, DEBUT, FIN, FONCTION, SYM_RET;
-terminal Symbol    POINTVIRGULE, VIRGULE;
-terminal Symbol    PLUS, MOINS, MULT, DIV, PAROUV, PARFER;
+terminal Symbol    POINT, POINTVIRGULE, VIRGULE;
+terminal Symbol    PAROUV, PARFER, CROOUV, CROFER;
+terminal Symbol    PLUS, MOINS, MULT, DIV;
 terminal Symbol    SUP, INF, EGALEGAL, DIFF, ET, OU, NON;
 terminal Symbol    EGAL;
 terminal Symbol    SI, ALORS, SINON, FINSI;
 terminal Symbol    TANTQUE, REPETER, FINTANTQUE;
 terminal Symbol    SYM_ECRIRE, SYM_LIRE;
+terminal Symbol    LONGUEUR;
 terminal String    TYPE, IDF;
 terminal String    CONSTANTECHAINE, CONSTANTEINT, CONSTANTEBOOL;
 
 /* Non terminals used in the grammar section.  */
 
-non terminal Symbol LDECLV;
-non terminal Symbol PARAMETRES;
+non terminal Symbol DEBUT_PROG;
+non terminal Symbol DEBUT_FONCTION;
 non terminal Programme PROG;
 non terminal BlocDInstructions LINST, LDECL;
 non terminal Instruction DECL, DECL_FONCTION, DECL_VAR;
@@ -101,6 +103,9 @@ non terminal Instruction INST, AFFECT, RETOURNE;
 non terminal Instruction BOUCLE, CONDITION;
 non terminal Instruction ECRIRE, LIRE;
 non terminal Expression EXPR, CSTE;
+non terminal Integer PARAMETRES, PAR_FORM, DECL_PAR;
+non terminal ArrayList<Instruction> LDECLV;
+non terminal ArrayList<Expression> PAR_EFF;
 
 /* Precedences of operators */
 
@@ -116,16 +121,18 @@ precedence left NON;
  
 start with PROG;
 
-PROG    ::=    SYM_PROG IDF:p DEBUT LDECL:ld LINST:li FIN
-               {: TDS.getInstance().entreeBloc();
-                  RESULT = new Programme(ld, li, p, pleft+1); 
+DEBUT_PROG    ::=    SYM_PROG
+                     {: TDS.getInstance().entreeBloc(); :}
+                     ;
+                                    
+PROG    ::=    DEBUT_PROG IDF:p DEBUT LDECL:ld LINST:li FIN
+               {: RESULT = new Programme(ld, li, p, pleft+1); 
                   TDS.getInstance().sortieBloc();
                :}    
-        |
-               SYM_PROG IDF:p DEBUT LINST:li FIN
-               {: TDS.getInstance().entreeBloc();
-                  RESULT = new Programme(li, p, pleft+1); 
-             	  TDS.getInstance().sortieBloc(); 
+      		|
+               DEBUT_PROG IDF:p DEBUT LINST:li FIN
+               {: RESULT = new Programme(li, p, pleft+1);
+                  TDS.getInstance().sortieBloc();
                :}
                ;
 
@@ -160,58 +167,90 @@ LDECL    ::=    LDECL:li DECL:d
                 :}
                 ;
                 	
-DECL    ::=    DECL_VAR 
-               {: RESULT = null; :}
+DECL    ::=    DECL_VAR :d
+               {: RESULT = d; :}
         | 
-               DECL_FONCTION:f
-               {: RESULT = f; :}
+               DECL_FONCTION:d
+               {: RESULT = d; :}
                ;       
          
-/* LDECLV    ::=    LDECLV DECL_VAR
-                 {: :}
+LDECLV    ::=    LDECLV:li DECL_VAR:d
+                 {: if (d != null) {
+                        li.add(d);
+                    }
+                        
+                    RESULT = li;
+                 :}
           |
-                 DECL_VAR
-                 {: :}  
-                 ; */
+                 DECL_VAR:d
+                 {: ArrayList<Instruction> li = new ArrayList<Instruction>(dleft+1); 
+                 
+                    if (d != null) {
+                        li.add(d);
+                    }
+                        
+                    RESULT = li;
+                 :}  
+                 ; 
                    
 DECL_VAR    ::=    TYPE:t IDF:idf POINTVIRGULE
                    {: EntreeVariable entree = new EntreeVariable(idf);
                       SymboleVariable symbole = new SymboleVariable(t);
-                      
                       TDS.getInstance().ajouter(entree, symbole, tleft+1); 
                    :}
+            |
+                   TYPE:t CROOUV EXPR:exp CROFER IDF:idf POINTVIRGULE
+                   {: EntreeVariable entree = new EntreeVariable(idf);
+                      SymboleTableau symbole = new SymboleTableau();
+                      TDS.getInstance().ajouter(entree, symbole, tleft+1);
+                      RESULT = new DeclarationTableau(idf, exp);
+                   :}
                    ;
-
-DECL_FONCTION    ::=    FONCTION IDF:i PARAMETRES DEBUT LINST:li FIN
-                        {:                        	   
-                           EntreeFonction entree = new EntreeFonction(i, 0);
-                           SymboleFonction symbole = new SymboleFonction("entier");
-                           
-                           TDS.getInstance().ajouter(entree, symbole, ileft+1);
-                           
-                           TDS.getInstance().entreeBloc();     
-                           RESULT = new Fonction(li, i, ileft+1);                    
+ 
+DEBUT_FONCTION    ::=    FONCTION
+                         {: TDS.getInstance().entreeBloc(); :}
+                         ;
+                                                                   
+DECL_FONCTION    ::=    DEBUT_FONCTION IDF:i PARAMETRES:nb DEBUT LINST:li FIN
+                        {: EntreeFonction entree = new EntreeFonction(i, nb);
+                           SymboleFonction symbole = new SymboleFonction("entier");                            
+                           RESULT = new Fonction(li, i, nb, ileft+1);
                            TDS.getInstance().sortieBloc();
+                           TDS.getInstance().ajouter(entree, symbole, ileft+1); 
                         :}
-                 /* 
                  |
-                        FONCTION IDF:i PARAMETRES DEBUT LDECLV LINST FIN
-                        {: :} */
+                        DEBUT_FONCTION IDF:i PARAMETRES:nb DEBUT LDECLV:ld LINST:li FIN
+                        {: EntreeFonction entree = new EntreeFonction(i, nb);
+                           SymboleFonction symbole = new SymboleFonction("entier");    
+                           li.ajouterAuDebut(ld);                       
+                           RESULT = new Fonction(li, i, nb, ileft+1);
+                           TDS.getInstance().sortieBloc();
+                           TDS.getInstance().ajouter(entree, symbole, ileft+1); 
+                        :} 
                         ;
   
 PARAMETRES    ::=    PAROUV PARFER
-                     {: :}
-              /* |
-                     PAROUV PAR_FORM PARFER
-                     {: :} */
+                     {: RESULT = 0; :}
+              |
+                     PAROUV PAR_FORM:nb PARFER
+                     {: RESULT = nb; :} 
                      ;
 
-/* PAR_FORM    ::=    PAR_FORM POINTVIRGULE TYPE:t IDF:i    
-                   {: :}
-                   TYPE:t IDF:i
-                   {: :}
-                   ; */
-                                                          		
+PAR_FORM    ::=    DECL_PAR POINTVIRGULE PAR_FORM:nb   
+                   {: RESULT = nb + 1; :}
+            |
+                   DECL_PAR
+                   {: RESULT = 1; :}
+                   ; 
+
+DECL_PAR    ::=    TYPE:t IDF:idf
+                   {: EntreeVariable e = new EntreeVariable(idf); 
+                      SymboleParametre s = new SymboleParametre(t);
+                      TDS.getInstance().ajouter(e, s, tleft+1);
+                      // System.out.println("Et un paramètre ! " + idf + " " + TDS.getInstance().numeroRegion());
+                   :}
+                   ;
+                                                            		
 INST    ::=    AFFECT:a
                {: RESULT = a; :}
         |
@@ -233,6 +272,9 @@ INST    ::=    AFFECT:a
            
 AFFECT    ::=    IDF:idf EGAL EXPR:exp POINTVIRGULE
                  {: RESULT = new Affectation(idf, exp); :}
+          |
+                 IDF:idf CROOUV EXPR:indice CROFER EGAL EXPR:exp POINTVIRGULE
+                 {: RESULT = new AffectationTableau(idf, indice, exp); :}
                  ;
 
 BOUCLE    ::=    TANTQUE EXPR:exp REPETER LINST:li FINTANTQUE
@@ -267,37 +309,37 @@ RETOURNE    ::=    SYM_RET EXPR:exp POINTVIRGULE
                    {: RESULT = new Retourne(exp); :}
                    ;
                                         
-EXPR    ::=     EXPR:g  PLUS  EXPR:d
+EXPR    ::=     EXPR:g PLUS EXPR:d
                 {: RESULT = new Plus(g, d) ; :}
         | 
-                EXPR:g  MOINS  EXPR:d
+                EXPR:g MOINS EXPR:d
                 {: RESULT = new Moins(g, d); :}
         |                
-                EXPR:g  MULT  EXPR:d
+                EXPR:g MULT EXPR:d
                 {: RESULT = new Mult(g, d); :}
         |                
-                EXPR:g  DIV  EXPR:d
+                EXPR:g DIV EXPR:d
                 {: RESULT = new Div(g, d); :}
         |       
-                EXPR:g  INF  EXPR:d
+                EXPR:g INF EXPR:d
                 {: RESULT = new Inferieur(g, d); :}
         |       
-                EXPR:g  SUP  EXPR:d
+                EXPR:g SUP EXPR:d
                 {: RESULT = new Superieur(g, d); :}
         |              
-                EXPR:g  EGALEGAL  EXPR:d
+                EXPR:g EGALEGAL EXPR:d
                 {: RESULT = new Egal(g, d); :}
         |       
-                EXPR:g  DIFF  EXPR:d
+                EXPR:g DIFF EXPR:d
                 {: RESULT = new Different(g, d); :}
         |                      
-                MOINS  EXPR:e  
+                MOINS EXPR:e  
                 {: RESULT = new MoinsUnaire(e); :}
         |      
-                EXPR:g  ET  EXPR:d
+                EXPR:g ET EXPR:d
                 {: RESULT = new EtLogique(g, d); :}
         |      
-                EXPR:g  OU  EXPR:d
+                EXPR:g OU EXPR:d
                 {: RESULT = new OuLogique(g, d); :}
         |      
                 NON EXPR:e
@@ -306,7 +348,7 @@ EXPR    ::=     EXPR:g  PLUS  EXPR:d
                 CSTE:c
                 {: RESULT = c; :}
         |
-                PAROUV  EXPR:e  PARFER
+                PAROUV EXPR:e PARFER
                 {: RESULT = e; :}
         |       
                 IDF:i
@@ -314,9 +356,15 @@ EXPR    ::=     EXPR:g  PLUS  EXPR:d
         |
                 IDF:i PAROUV PARFER
                 {: RESULT = new Appel(i, ileft+1); :}
-        /* |       
+        |       
                 IDF:i PAROUV PAR_EFF:par PARFER
-                {: RESULT = new Appel(i, par, ileft+1); :} */
+                {: RESULT = new Appel(i, par, ileft+1); :}
+        |       
+                IDF:i POINT LONGUEUR
+                {: RESULT = new Longueur(i, ileft+1); :}
+        |
+                IDF:i CROOUV EXPR:exp CROFER
+                {: RESULT = new IdentifiantTableau(i, exp, ileft+1); :}
                 ;
 
 CSTE    ::=     CONSTANTEINT:e 
@@ -325,14 +373,14 @@ CSTE    ::=     CONSTANTEINT:e
                 {: RESULT = new ConstanteBool(e, eleft+1); :}
                 ;
   
-/* PAR_EFF    ::=    PAR_EFF:par VIRGULE EXPR:exp
-                     {: par.ajouter(exp);
-		                RESULT = par;
-		             :}
-              |      
-                     EXPR:exp
-                     {: ArrayList<Expression> par = new ArrayList<>();
-                        par.ajouter(exp);
-		                RESULT = par;
-                     :}
-                     ; */        
+PAR_EFF    ::=    PAR_EFF:par VIRGULE EXPR:exp
+                  {: par.add(exp);
+		             RESULT = par;
+		          :}
+           |      
+                  EXPR:exp
+                  {: ArrayList<Expression> par = new ArrayList<>();
+                     par.add(exp);
+		             RESULT = par;
+                  :}
+                  ;       

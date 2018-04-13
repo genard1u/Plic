@@ -10,14 +10,18 @@ public class Condition extends Instruction {
     private BlocDInstructions alors;
     private BlocDInstructions sinon;
     
+    private boolean estSinon;
+    
     
     public Condition(Expression expr) {
-    	super(expr.getNoLigne());
+    	super(expr.getNoLigne());    
     	
-    	exp = expr;
+    	exp = expr;   	
     	
     	alors = new BlocDInstructions(noLigne + 1);
     	sinon = new BlocDInstructions(noLigne + 1);
+    	
+    	estSinon = false;
     }
     
     /**
@@ -36,10 +40,12 @@ public class Condition extends Instruction {
 		if (!vide) {
 			alors = li;
 			sinon = new BlocDInstructions(noLigne + 1);
+			estSinon = false;
 		}
 		else {
 			alors = new BlocDInstructions(noLigne + 1);
 			sinon = li;
+			estSinon = true;
 		}
 	}
 
@@ -50,11 +56,23 @@ public class Condition extends Instruction {
 		
 		this.alors = alors;
 		this.sinon = sinon;
+		
+		estSinon = true;
+	}
+	
+	public boolean estSinon() {
+		return estSinon;
 	}
 	
 	@Override
 	public boolean estRetourne() {
-		return alors.estRetourne() && sinon.estRetourne();
+		boolean sinonEstRetourne = false;
+		
+		if (estSinon) {
+			sinonEstRetourne = sinon.estRetourne();
+		}
+		
+		return alors.estRetourne() && sinonEstRetourne;
 	}
 	
 	@Override

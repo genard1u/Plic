@@ -11,6 +11,10 @@ public abstract class Expression extends ArbreAbstrait {
         super(n) ;
     }
 
+    public boolean estConstante() {
+    	return false;
+    }
+    
     public abstract String getType();
     public abstract String operation();
     

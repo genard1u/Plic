@@ -2,10 +2,10 @@ package yal.analyse.tds.symbole;
 
 import yal.analyse.tds.TDS;
 
-public class SymboleVariable extends Symbole {
+public class SymboleTableau extends Symbole {
 
-	public SymboleVariable(String type) {
-		super(type);
+	public SymboleTableau() {
+		super("tableau");
 		deplacement = - TDS.getInstance().tailleZoneDesVariables();
 		espace = 4;
 	}

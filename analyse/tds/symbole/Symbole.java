@@ -4,15 +4,27 @@ import yal.analyse.tds.TDS;
 
 public abstract class Symbole {
 
-	private String type;
-	private int deplacement;	
-	private int numeroRegion;
+	protected String type;
+	protected int deplacement;	
+	protected int espace;
+	protected int numeroRegion;
+	protected int niveauImbrication;
 	
 	
-	public Symbole(String type) {
+	protected Symbole() {}
+	
+	protected Symbole(String type) {
 		this.type = type;
-		deplacement = - TDS.getInstance().tailleZoneDesVariables();
 		numeroRegion = TDS.getInstance().numeroRegion();
+		niveauImbrication = TDS.getInstance().niveauImbrication();
+	}
+	
+	public boolean pourVariable() {
+		return false;
+	}
+	
+	public boolean pourParametre() {
+		return false;
 	}
 	
 	public String getType() {
@@ -23,14 +35,22 @@ public abstract class Symbole {
 		return deplacement;
 	}	
 	
+	public int getEspace() {
+	    return espace;	
+	}
+	
 	public int numeroRegion() {
 		return numeroRegion;
 	}
 
+	public int niveauImbrication() {
+		return niveauImbrication;
+	}
+
 	@Override
 	public String toString() {
-		return "Symbole [type=" + type + ", deplacement=" + deplacement
-				+ ", numeroRegion=" + numeroRegion + "]";
+		return "Symbole [type=" + type + ", deplacement=" + deplacement + ", numeroRegion=" + numeroRegion
+				+ ", niveauImbrication=" + niveauImbrication + "]";
 	}
 	
 }

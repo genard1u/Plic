@@ -7,11 +7,14 @@ import yal.arbre.expression.Expression;
 import yal.exceptions.AnalyseSemantiqueException;
 
 public class Affectation extends Instruction {
-
-	private Expression exp;
-	private String idf;
-	private String type;
-	private int deplacement;
+	
+	protected Expression exp; 
+	
+	protected String idf;
+	protected String type;
+	
+	protected int deplVar;
+	protected int numeroRegion;
 	
 	
 	public Affectation(String idf, Expression exp) {
@@ -30,7 +33,6 @@ public class Affectation extends Instruction {
 		}
 		
 		type = s.getType();
-		deplacement = s.getDeplacement();		
 		exp.verifier();
 		
 		if (!type.equals(exp.getType())) {
@@ -45,6 +47,9 @@ public class Affectation extends Instruction {
 	    	
 			throw new AnalyseSemantiqueException(getNoLigne(),erreur.toString());
 		}
+		
+		deplVar = s.getDeplacement();	
+		numeroRegion = s.numeroRegion();
 	}
 
 	@Override
@@ -53,16 +58,61 @@ public class Affectation extends Instruction {
 		
 		aff.append("# Affectation\n");
 		aff.append(exp.toMIPS());
+		
+		aff.append("# Empile la valeur à mettre dans la variable\n");
+		aff.append("sw $v0, 0($sp)\n");
+		aff.append("add $sp, $sp, -4\n");
+		
+		/* Base courante */
+		aff.append("# Récupère la base courante\n");
+		aff.append("move $t2, $s7\n");
+		
+		/* Numéro de région où est déclarée la variable */
+		aff.append("# Récupère le numéro de région où est déclarée la variable\n");
+		aff.append("li $v1, ");
+		aff.append(numeroRegion);
+		aff.append("\n");
+		
+		/* Entrée TantQue */
+		aff.append("tq_");
+		aff.append(hashCode());
+		aff.append(" :\n");
+		
+		/* On récupère le numéro de région de l'environnement courant */
+		aff.append("lw $v0, 4($t2) \n");
+		aff.append("sub $v0, $v0, $v1\n");
+		
+		/* Branchement vers la fin si les deux numéros sont égaux */
+		aff.append("beqz $v0, fintq_");
+		aff.append(hashCode());
+		aff.append("\n");
+		
+		/* On repart au début et on essaye avec l'environnement précédent sinon */
+		aff.append("lw $t2, 8($t2) \n");
+		aff.append("j tq_");
+		aff.append(hashCode());
+		aff.append("\n");
+		
+		/* Sortie TantQue */
+		aff.append("fintq_");
+		aff.append(hashCode());
+		aff.append(" :\n");
+		
+		aff.append("# Dépile la valeur à mettre dans la variable\n");
+	    aff.append("add $sp, $sp, 4\n");
+	    aff.append("lw $v0, 0($sp)\n");
+	    
 		aff.append("sw $v0, ");
-		aff.append(deplacement);
-		aff.append("($s7)\n");
+		aff.append(deplVar);
+		aff.append("($t2)");
+		aff.append("\n");
 		
         return aff.toString();
 	}
 
 	@Override
 	public String toString() {
-		return idf + " = " + exp.toString();
+		return idf + " = " + exp.toString() + " ;";
 	}
 
 }

@@ -14,31 +14,32 @@ import yal.arbre.ArbreAbstrait;
 import yal.exceptions.AnalyseException;
 
 /**
- * @author Clément Bellanger, Pierre Génard, Valentin Thouvenin
+ * @author Pierre Génard
  */
 public class Yal {
     
+	private static final String COMPILATION_OK = "COMPILATION OK";
+	
+	
     public Yal(String source) {
         try {
             AnalyseurSyntaxique analyseur = new AnalyseurSyntaxique(new AnalyseurLexical(new FileReader(source)));
             ArbreAbstrait arbre = (ArbreAbstrait) analyseur.parse().value;
-                    
+            
             TDS.getInstance().prepareAnalyseSemantique();
             arbre.verifier(); 
-            System.out.println("COMPILATION OK");             
+            
+            System.out.println(COMPILATION_OK);             
             ecriture(arbre.toMIPS(), sortie(source));
         } 
         catch (FileNotFoundException ex) {
             System.err.println("Fichier " + source + " inexistant");
-	        System.exit(1);
         }
         catch (AnalyseException ex) {
             System.err.println(ex.getMessage());
-            System.exit(1);
         }
         catch (Exception ex) {
             Logger.getLogger(Yal.class.getName()).log(Level.SEVERE, null, ex);
-            System.exit(1);
         }
     }
 

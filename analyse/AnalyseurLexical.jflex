@@ -58,10 +58,14 @@ commentaireSlashSlash = [/][/].*
 "("                	{ return symbol(CodesLexicaux.PAROUV); }
 ")"                	{ return symbol(CodesLexicaux.PARFER); }
 
+"[" { return symbol(CodesLexicaux.CROOUV); }
+"]" { return symbol(CodesLexicaux.CROFER); }
+
 "=" { return symbol(CodesLexicaux.EGAL); }
 
 ";" { return symbol(CodesLexicaux.POINTVIRGULE); }
 "," { return symbol(CodesLexicaux.VIRGULE); }
+"." { return symbol(CodesLexicaux.POINT); }
 
 {csteE}      	        { return symbol(CodesLexicaux.CONSTANTEINT, yytext()); }
 {csteB}      	        { return symbol(CodesLexicaux.CONSTANTEBOOL, yytext()); }
@@ -72,6 +76,7 @@ commentaireSlashSlash = [/][/].*
 "fin" { return symbol(CodesLexicaux.FIN); }
 "fonction" { return symbol(CodesLexicaux.FONCTION); }
 "retourne" { return symbol(CodesLexicaux.SYM_RET); }
+"longueur" {return symbol(CodesLexicaux.LONGUEUR); }
 
 "ecrire" { return symbol(CodesLexicaux.SYM_ECRIRE); }
 "lire" { return symbol(CodesLexicaux.SYM_LIRE); } 

@@ -47,7 +47,7 @@ public class Ecrire extends Instruction {
 
 	@Override
 	public String toString() {
-		return "ecrire " + exp.toString();
+		return "ecrire " + exp.toString() + " ;";
 	}
 	
 }

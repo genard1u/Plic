@@ -29,8 +29,21 @@ public class BlocDInstructions extends ArbreAbstrait {
         bloc.add(a);
     }
        
+    public void ajouterAuDebut(ArrayList<Instruction> li) {
+    	for (int i = li.size() - 1; i >= 0; i --) {
+    		bloc.add(0, li.get(i));
+    	}
+    }
+    
     public boolean estVide() {
     	return bloc.isEmpty();
+    }
+    
+    public Instruction recuperer(int index) {
+    	assert index >= 0;
+    	assert index < nombreInstructions();
+    	
+    	return bloc.get(index);
     }
     
     public int nombreInstructions() {

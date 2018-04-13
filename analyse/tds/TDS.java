@@ -15,7 +15,7 @@ public class TDS {
 	private Arbre blocCourant;
 	
 	private int numeroRegion;
-	private int numeroImbrication;
+	private int niveauImbrication;
 	
 	
 	private TDS() {
@@ -31,7 +31,7 @@ public class TDS {
 		blocPrincipal = null;
 		blocCourant = null;
 		numeroRegion = -1;
-		numeroImbrication = -1;
+		niveauImbrication = -1;
 	}
 	
 	public void prepareAnalyseSemantique() {
@@ -39,7 +39,7 @@ public class TDS {
 		
 		analyse = Analyse.Semantique;
 		numeroRegion = -1;
-		numeroImbrication = -1;
+		niveauImbrication = -1;
 	}
     
 	public void ajouter(Entree e, Symbole s, int noLigne) {
@@ -54,14 +54,14 @@ public class TDS {
 		
 		return blocCourant.identifier(e);
 	}
-
+	
 	public void entreeBloc() {
 		numeroRegion ++;
-		numeroImbrication ++;
+		niveauImbrication ++;
 		
 		switch (analyse) {
 		    case Syntaxique:
-		    	if (numeroRegion < 0) {
+		    	if (numeroRegion == 0) {
 		    		Arbre premier = new Arbre(numeroRegion);
 		    		blocPrincipal = premier;
 		    		blocCourant = premier;
@@ -74,7 +74,7 @@ public class TDS {
 		    	
 		        break;
 		    case Semantique:
-		    	if (numeroRegion < 0) {
+		    	if (numeroRegion == 0) {
 		    		blocCourant = blocPrincipal;
 		    	}
 		    	else {
@@ -91,8 +91,10 @@ public class TDS {
 		
 		Arbre parent = blocCourant.getParent();
 		
+		assert parent != null || blocCourant.numeroRegion() == 0;
+		
 		blocCourant = parent;
-		numeroImbrication--;
+		niveauImbrication --;
 	}
 	
 	public int numeroParent() {
@@ -114,8 +116,8 @@ public class TDS {
 		return blocCourant.numeroRegion();
 	}
 	
-	public int numeroImbrication() {
-		return numeroImbrication;
+	public int niveauImbrication() {
+		return niveauImbrication;
     }
 	
 	public int nbVariables() {
@@ -124,11 +126,23 @@ public class TDS {
 		return blocCourant.nbVariables();
 	}
 	
+	public int nbParametres() {
+        assert blocCourant != null;
+		
+		return blocCourant.nbParametres();
+	}
+	
 	public int tailleZoneDesVariables() {
 		assert blocCourant != null;
 		
 		return blocCourant.tailleZoneDesVariables();
     }
+	
+	public int tailleZoneDesParametres() {
+		assert blocCourant != null;
+		
+		return blocCourant.tailleZoneDesParametres();
+	}
 	
 	@Override
 	public String toString() {

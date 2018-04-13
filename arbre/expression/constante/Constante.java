@@ -15,12 +15,14 @@ public abstract class Constante extends Expression {
         cste = texte;
     }
 
+    public boolean estConstante() {
+    	return true;
+    }
+    
     public abstract String constante();
     
     @Override
-    public void verifier() {
-    	/* Rien à faire */
-    }
+    public void verifier() {}
     
     @Override
     public String toMIPS() {

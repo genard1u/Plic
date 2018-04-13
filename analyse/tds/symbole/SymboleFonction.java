@@ -1,36 +1,35 @@
 package yal.analyse.tds.symbole;
 
-import yal.analyse.tds.TDS;
+import java.util.ArrayList;
 
 public class SymboleFonction extends Symbole {
 
 	private String etiquette;
 	
-	private String[] typesDesParametres;
+	private ArrayList<String> typesDesParametres;
 	
 	
 	public SymboleFonction(String typeRetour) {
 		super(typeRetour);
-		
-		typesDesParametres = null;
+		deplacement = 0;
+		espace = 0;
+		typesDesParametres = new ArrayList<String>();
 		etiquette = construireEtiquette();
 	}
 	
-	public SymboleFonction(String typeRetour, String... parametres) {
+	public SymboleFonction(String typeRetour, ArrayList<String> types) {
 		super(typeRetour);
-		
-		typesDesParametres = new String[parametres.length];
-		
-		for (int i = 0; i < parametres.length; i ++) {
-			typesDesParametres[i] = parametres[i];
-		}
+		deplacement = 0;
+		espace = 0;
+		typesDesParametres = types;
+		etiquette = construireEtiquette();
 	}
 	
 	private String construireEtiquette() {
-		StringBuilder eti = new StringBuilder(10);
+		StringBuilder eti = new StringBuilder(20);
 		
 		eti.append("fonction");
-		eti.append(TDS.getInstance().numeroRegion());
+		eti.append(hashCode());
 		
 		return eti.toString();
 	}
@@ -41,6 +40,10 @@ public class SymboleFonction extends Symbole {
 	
 	public String getTypeRetour() {
 		return getType();
+	}
+	
+	public ArrayList<String> types() {
+		return typesDesParametres;
 	}
 	
 }
